@@ -1,18 +1,15 @@
-using Microsoft.Extensions.Logging;
-using ModelContextProtocol.AspNetCore;
-using ModelContextProtocol.Server;
+using Pme_MCP_Metrum.Api.Tools.Devices;
 using Pme_MCP_Metrum.Api.Tools.Sources;
+using Pme_MCP_Metrum.Application.Devices;
+using Pme_MCP_Metrum.Application.Devices.UseCases;
 using Pme_MCP_Metrum.Application.Sources;
 using Pme_MCP_Metrum.Application.Sources.UseCases;
 using Pme_MCP_Metrum.Infrastructure.Persistence;
-using Pme_MCP_Metrum.Infrastructure.Repositories;
+using Pme_MCP_Metrum.Infrastructure.Repositories.Devices;
 using Pme_MCP_Metrum.Infrastructure.Repositories.Sources;
-
-
 
 var transport = (Environment.GetEnvironmentVariable("MCP_TRANSPORT") ?? "stdio")
     .Trim().ToLowerInvariant();
-
 
 if (transport == "http")
 {
@@ -25,18 +22,24 @@ if (transport == "http")
 
     builder.Logging.ClearProviders();
     builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
+    builder.Logging.AddFile("logs/devices_tool_errors.txt");
+    builder.Logging.SetMinimumLevel(LogLevel.Information);
 
-
+    // Repositórios e UseCases
     builder.Services.AddSingleton<SqlConnectionFactory>();
+    builder.Services.AddSingleton<SqlConnectionFactoryNetwork>();
+
     builder.Services.AddScoped<ISourceRepository, SourceRepository>();
+    builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+
     builder.Services.AddScoped<ListSources>();
+    builder.Services.AddScoped<ListDevices>();
 
-
-
-
+    // MCP Server com as tools
     builder.Services.AddMcpServer()
         .WithHttpTransport()
-        .WithToolsFromAssembly(typeof(SourcesTools).Assembly);
+        .WithToolsFromAssembly(typeof(SourcesTools).Assembly)
+        .WithToolsFromAssembly(typeof(DevicesTools).Assembly);
 
     var app = builder.Build();
     app.MapMcp("/mcp");
@@ -45,7 +48,7 @@ if (transport == "http")
     return;
 }
 
-
+// Modo STDIO (Claude Desktop ou CLI)
 var host = Host.CreateApplicationBuilder(args);
 
 host.Configuration
@@ -55,14 +58,23 @@ host.Configuration
 
 host.Logging.ClearProviders();
 host.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
+host.Logging.AddFile("logs/devices_tool_errors.txt");
+host.Logging.SetMinimumLevel(LogLevel.Information);
 
-
+// Repositórios e UseCases
 host.Services.AddSingleton<SqlConnectionFactory>();
-host.Services.AddScoped<ISourceRepository, SourceRepository>();
-host.Services.AddScoped<ListSources>();
+host.Services.AddSingleton<SqlConnectionFactoryNetwork>();
 
+host.Services.AddScoped<ISourceRepository, SourceRepository>();
+host.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+
+host.Services.AddScoped<ListSources>();
+host.Services.AddScoped<ListDevices>();
+
+// MCP Server com as tools
 host.Services.AddMcpServer()
     .WithStdioServerTransport()
-    .WithToolsFromAssembly(typeof(SourcesTools).Assembly);
+    .WithToolsFromAssembly(typeof(SourcesTools).Assembly)
+    .WithToolsFromAssembly(typeof(DevicesTools).Assembly);
 
 await host.Build().RunAsync();
