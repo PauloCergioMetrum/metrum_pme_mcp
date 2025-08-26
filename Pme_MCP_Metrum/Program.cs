@@ -1,17 +1,21 @@
 using Pme_MCP_Metrum.Api.Tools.Alarms;
 using Pme_MCP_Metrum.Api.Tools.Devices;
+using Pme_MCP_Metrum.Api.Tools.PQEvents;
 using Pme_MCP_Metrum.Api.Tools.Sources;
 using Pme_MCP_Metrum.Application.Alarms;
 using Pme_MCP_Metrum.Application.DataLog2.UseCases;
 using Pme_MCP_Metrum.Application.Devices;
 using Pme_MCP_Metrum.Application.Devices.UseCases;
+using Pme_MCP_Metrum.Application.PQEvents.UseCases;
 using Pme_MCP_Metrum.Application.Sources;
 using Pme_MCP_Metrum.Application.Sources.UseCases;
 using Pme_MCP_Metrum.Domain.Repositories;
+using Pme_MCP_Metrum.Domain.Repositories.PQEvents;
 using Pme_MCP_Metrum.Infrastructure.Persistence;
 using Pme_MCP_Metrum.Infrastructure.Repositories.Alarms;
 using Pme_MCP_Metrum.Infrastructure.Repositories.DataLogs2;
 using Pme_MCP_Metrum.Infrastructure.Repositories.Devices;
+using Pme_MCP_Metrum.Infrastructure.Repositories.PQEvents;
 using Pme_MCP_Metrum.Infrastructure.Repositories.Sources;
 using static Pme_MCP_Metrum.Api.Tools.DataLog2.DataLog2Tools;
 
@@ -41,13 +45,22 @@ if (transport == "http")
     builder.Services.AddScoped<ISourceRepository, SourceRepository>();
     builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
     builder.Services.AddScoped<IAlarmRepository, AlarmRepository>();
-    builder.Services.AddScoped<IDataLog2Repository, DataLog2Repository>();  
+    builder.Services.AddScoped<IDataLog2Repository, DataLog2Repository>();
+    builder.Services.AddScoped<IPQEventsRepository, PQEventRepository>();
+
+
+
+
+
 
     //IMPORTANTE ID
     builder.Services.AddScoped<ListSources>();
     builder.Services.AddScoped<ListDevices>();
     builder.Services.AddScoped<ListAlarms>();
     builder.Services.AddScoped<ListDataLog2>();
+    builder.Services.AddScoped<ListPQEvents>();
+    builder.Services.AddScoped<GetLatestPQEvent>();     
+    builder.Services.AddScoped<CountPQEventsByDay>();
 
     //IMPORTANTE 
     // MCP Server com as tools
@@ -56,7 +69,8 @@ if (transport == "http")
         .WithToolsFromAssembly(typeof(SourcesTools).Assembly)
         .WithToolsFromAssembly(typeof(DevicesTools).Assembly)
         .WithToolsFromAssembly(typeof(AlarmsTools).Assembly)
-       .WithToolsFromAssembly(typeof(DataLog2ListArgs).Assembly);
+       .WithToolsFromAssembly(typeof(DataLog2ListArgs).Assembly)
+        .WithToolsFromAssembly(typeof(PQEventsTools).Assembly);
 
     var app = builder.Build();
     app.MapMcp("/mcp");
@@ -85,6 +99,7 @@ host.Services.AddScoped<ISourceRepository, SourceRepository>();
 host.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 host.Services.AddScoped<IAlarmRepository, AlarmRepository>();
 host.Services.AddScoped<IDataLog2Repository, DataLog2Repository>();
+host.Services.AddScoped<IPQEventsRepository, PQEventRepository>();
 
 
 //IMPORTANTE 
@@ -92,6 +107,9 @@ host.Services.AddScoped<ListSources>();
 host.Services.AddScoped<ListDevices>();
 host.Services.AddScoped<ListAlarms>();
 host.Services.AddScoped<ListDataLog2>();
+host.Services.AddScoped<ListPQEvents>();
+host.Services.AddScoped<GetLatestPQEvent>();         
+host.Services.AddScoped<CountPQEventsByDay>();
 
 // MCP Server com as tools
 host.Services.AddMcpServer()
@@ -99,7 +117,8 @@ host.Services.AddMcpServer()
     .WithToolsFromAssembly(typeof(SourcesTools).Assembly)
     .WithToolsFromAssembly(typeof(DevicesTools).Assembly)
     .WithToolsFromAssembly(typeof(AlarmsTools).Assembly)
-    .WithToolsFromAssembly(typeof(DataLog2ListArgs).Assembly);
+    .WithToolsFromAssembly(typeof(DataLog2ListArgs).Assembly)
+  .WithToolsFromAssembly(typeof(PQEventsTools).Assembly);
 
 
 await host.Build().RunAsync();
