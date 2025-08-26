@@ -1,10 +1,13 @@
+using Pme_MCP_Metrum.Api.Tools.Alarms;
 using Pme_MCP_Metrum.Api.Tools.Devices;
 using Pme_MCP_Metrum.Api.Tools.Sources;
+using Pme_MCP_Metrum.Application.Alarms;
 using Pme_MCP_Metrum.Application.Devices;
 using Pme_MCP_Metrum.Application.Devices.UseCases;
 using Pme_MCP_Metrum.Application.Sources;
 using Pme_MCP_Metrum.Application.Sources.UseCases;
 using Pme_MCP_Metrum.Infrastructure.Persistence;
+using Pme_MCP_Metrum.Infrastructure.Repositories.Alarms;
 using Pme_MCP_Metrum.Infrastructure.Repositories.Devices;
 using Pme_MCP_Metrum.Infrastructure.Repositories.Sources;
 
@@ -29,17 +32,24 @@ if (transport == "http")
     builder.Services.AddSingleton<SqlConnectionFactory>();
     builder.Services.AddSingleton<SqlConnectionFactoryNetwork>();
 
+    //IMPORTANTE ID
+
     builder.Services.AddScoped<ISourceRepository, SourceRepository>();
     builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+    builder.Services.AddScoped<IAlarmRepository, AlarmRepository>();
 
+    //IMPORTANTE ID
     builder.Services.AddScoped<ListSources>();
     builder.Services.AddScoped<ListDevices>();
+    builder.Services.AddScoped<ListAlarms>();
 
+    //IMPORTANTE 
     // MCP Server com as tools
     builder.Services.AddMcpServer()
         .WithHttpTransport()
         .WithToolsFromAssembly(typeof(SourcesTools).Assembly)
-        .WithToolsFromAssembly(typeof(DevicesTools).Assembly);
+        .WithToolsFromAssembly(typeof(DevicesTools).Assembly)
+        .WithToolsFromAssembly(typeof(AlarmsTools).Assembly);
 
     var app = builder.Build();
     app.MapMcp("/mcp");
@@ -67,14 +77,19 @@ host.Services.AddSingleton<SqlConnectionFactoryNetwork>();
 
 host.Services.AddScoped<ISourceRepository, SourceRepository>();
 host.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+host.Services.AddScoped<IAlarmRepository, AlarmRepository>();
 
+
+//IMPORTANTE 
 host.Services.AddScoped<ListSources>();
 host.Services.AddScoped<ListDevices>();
+host.Services.AddScoped<ListAlarms>();
 
 // MCP Server com as tools
 host.Services.AddMcpServer()
     .WithStdioServerTransport()
     .WithToolsFromAssembly(typeof(SourcesTools).Assembly)
-    .WithToolsFromAssembly(typeof(DevicesTools).Assembly);
+    .WithToolsFromAssembly(typeof(DevicesTools).Assembly)
+    .WithToolsFromAssembly(typeof(AlarmsTools).Assembly);
 
 await host.Build().RunAsync();
