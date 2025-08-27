@@ -1,0 +1,8 @@
+2025-08-27T09:41:12.7038468-03:00  [INF] "Server (stream) (Pme_MCP_Metrum)" transport reading messages. (c7d0af18)
+2025-08-27T09:41:12.7856621-03:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2025-08-27T09:41:12.7864836-03:00  [INF] Hosting environment: "Production" (bc5a1a4e)
+2025-08-27T09:41:12.7865483-03:00  [INF] Content root path: "C:\MCPSERVER\metrum_pme_mcp\Pme_MCP_Metrum" (cc26f24e)
+2025-08-27T10:49:47.2184610-03:00  [INF] "Server (stream) (Pme_MCP_Metrum)" transport reading messages. (c7d0af18)
+2025-08-27T10:49:47.3073673-03:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2025-08-27T10:49:47.3080062-03:00  [INF] Hosting environment: "Production" (bc5a1a4e)
+2025-08-27T10:49:47.3080490-03:00  [INF] Content root path: "C:\MCPSERVER\metrum_pme_mcp\Pme_MCP_Metrum" (cc26f24e)
