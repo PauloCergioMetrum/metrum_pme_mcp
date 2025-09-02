@@ -1,8 +1,8 @@
 # Base runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-# Honra a porta do EasyPanel (PORT) e expıe 8080 por padr„o
-ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080}
+# Honra a porta do EasyPanel (PORT) e exp√µe 8080 por padr√£o
+ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 EXPOSE 8080
  
 # SDK p/ build
@@ -13,7 +13,7 @@ WORKDIR /src
 COPY Pme_MCP_Metrum/Pme_MCP_Metrum.csproj Pme_MCP_Metrum/
 RUN dotnet restore "Pme_MCP_Metrum/Pme_MCP_Metrum.csproj"
  
-# Agora copia o restante do cÛdigo da subpasta
+# Agora copia o restante do c√≥digo da subpasta
 COPY Pme_MCP_Metrum/. Pme_MCP_Metrum/
  
 # Publica
