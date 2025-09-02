@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 # Honra a porta do EasyPanel (PORT) e expõe 8080 por padrão
-ENV ASPNETCORE_URLS=http://0.0.0.0:8080
+ENV ASPNETCORE_URLS=http://0.0.0.0:8092
 EXPOSE 8080
  
 # SDK p/ build
