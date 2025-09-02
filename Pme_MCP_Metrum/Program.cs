@@ -64,6 +64,9 @@ if (transport == "http")
     builder.Services.AddScoped<CountPQEventsByDay>();
     builder.Services.AddScoped<ListSourceQuantityName>();
 
+    builder.Services.AddScoped<SearchSources>();
+    builder.Services.AddScoped<GetSourceById>();
+
 
     //IMPORTANTE 
     // MCP Server com as tools
@@ -118,6 +121,8 @@ host.Services.AddScoped<ListPQEvents>();
 host.Services.AddScoped<GetLatestPQEvent>();         
 host.Services.AddScoped<CountPQEventsByDay>();
 host.Services.AddScoped<ListSourceQuantityName>();
+host.Services.AddScoped<SearchSources>();
+host.Services.AddScoped<GetSourceById>();
 
 
 // MCP Server com as tools
